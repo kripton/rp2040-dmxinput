@@ -29,7 +29,11 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
     hardware_irq
     pico_stdlib
     pico_time
+    picodmx
 )
+
+# enable usb output, disable uart output
+pico_enable_stdio_usb(${CMAKE_PROJECT_NAME} 1)
 
 ## Create map/bin/hex/uf2 file etc.
 pico_add_extra_outputs(${CMAKE_PROJECT_NAME})
