@@ -7,3 +7,8 @@
 #define PIN_DMXIN_1      7
 #define PIN_DMXIN_2      8
 #define PIN_DMXIN_3      9
+
+
+#define PIN_DEBUG_0     16
+#define PIN_DEBUG_1     17
+#define PIN_DEBUG_2     18

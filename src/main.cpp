@@ -35,8 +35,10 @@ int64_t __isr alarmFired(alarm_id_t id, void *user_data) {
 
     if (id == in_0_alarm) {
         // Toggle the LED :)
-        printf ("ALARM IN 0 fired!\n");
-        gpio_put(PICO_DEFAULT_LED_PIN, !gpio_get(PICO_DEFAULT_LED_PIN));
+        gpio_put(PIN_DEBUG_1, 1); gpio_put(PICO_DEFAULT_LED_PIN, 1); sleep_us(2); 
+        //printf ("ALARM IN 0 fired!\n");
+        gpio_put(PIN_DEBUG_1, 0);
+        gpio_put(PICO_DEFAULT_LED_PIN, 0);
     }
 
     // Do not re-schedule the alarm
@@ -44,12 +46,15 @@ int64_t __isr alarmFired(alarm_id_t id, void *user_data) {
 }
 
 void __isr input_updated_c(DmxInput* instance) {
-    printf("DMX input received\n");
+    gpio_put(PIN_DEBUG_2, 1);  sleep_us(2); 
+    //printf("DMX input received (byte counter)\n");
     // Toggle the LED
     //gpio_put(PICO_DEFAULT_LED_PIN, !gpio_get(PICO_DEFAULT_LED_PIN));
+    gpio_put(PIN_DEBUG_2, 0);
 }
 
 void __isr gpio_fallingEdge(uint gpio, uint32_t events) {
+    gpio_put(PIN_DEBUG_0, 1);
     if (events != GPIO_IRQ_EDGE_FALL) {
         return;
     }
@@ -68,12 +73,21 @@ void __isr gpio_fallingEdge(uint gpio, uint32_t events) {
         case PIN_DMXIN_3:
             break;
     }
+    gpio_put(PIN_DEBUG_0, 0);
 }
 
 int main() {
     // Init the on-board LED
     gpio_init(PICO_DEFAULT_LED_PIN);
     gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
+
+    // DEBUG/measurement pins
+    gpio_init(PIN_DEBUG_0);
+    gpio_set_dir(PIN_DEBUG_0, GPIO_OUT);
+    gpio_init(PIN_DEBUG_1);
+    gpio_set_dir(PIN_DEBUG_1, GPIO_OUT);
+    gpio_init(PIN_DEBUG_2);
+    gpio_set_dir(PIN_DEBUG_2, GPIO_OUT);
 
     stdio_init_all();
 
