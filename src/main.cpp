@@ -26,10 +26,15 @@ DmxInput in_2;   // The instance of DmxInput for universe 2
 DmxInput in_3;   // The instance of DmxInput for universe 3
 
 void __isr input_updated_c(DmxInput* instance) {
-    gpio_put(PIN_DEBUG_2, 1);  sleep_us(10); 
+    gpio_put(PIN_DEBUG_2, 1);
+    
+    sleep_us(1); // Give the Logic Analyzer some time to see the signal
+
+    //printf("Channels received: %ld\n", instance->_channels_captured);
     //printf("DMX input received (byte counter)\n");
     // Toggle the LED
-    //gpio_put(PICO_DEFAULT_LED_PIN, !gpio_get(PICO_DEFAULT_LED_PIN));
+    gpio_put(PICO_DEFAULT_LED_PIN, !gpio_get(PICO_DEFAULT_LED_PIN));
+
     gpio_put(PIN_DEBUG_2, 0);
 }
 
@@ -49,6 +54,8 @@ int main() {
     gpio_set_dir(19, GPIO_OUT);
     gpio_init(20);
     gpio_set_dir(20, GPIO_OUT);
+    //gpio_init(21);
+    //gpio_set_dir(21, GPIO_OUT);
 
     stdio_init_all();
 
@@ -58,6 +65,5 @@ int main() {
 
     while (true) {
         sleep_ms(1000);
-        printf("ping\n");
     }
 };
