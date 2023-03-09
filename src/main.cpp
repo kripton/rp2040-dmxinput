@@ -28,9 +28,10 @@ DmxInput in_3;   // The instance of DmxInput for universe 3
 void __isr input_updated_c(DmxInput* instance) {
     gpio_put(PIN_DEBUG_2, 1);
     
-    sleep_us(1); // Give the Logic Analyzer some time to see the signal
+    //sleep_us(1); // Give the Logic Analyzer some time to see the signal
 
-    //printf("Channels received: %ld\n", instance->_channels_captured);
+    printf("Channels received: %ld\n", instance->_channels_captured);
+
     //printf("DMX input received (byte counter)\n");
     // Toggle the LED
     gpio_put(PICO_DEFAULT_LED_PIN, !gpio_get(PICO_DEFAULT_LED_PIN));
@@ -56,11 +57,17 @@ int main() {
     gpio_set_dir(20, GPIO_OUT);
     //gpio_init(21);
     //gpio_set_dir(21, GPIO_OUT);
+    gpio_init(22);
+    gpio_set_dir(22, GPIO_OUT);
 
     stdio_init_all();
 
+    // TODO: Works fine if NUMCHANNELS <= number of channels on wire
+    //       DMA state still seems to be reset incorrectly ...
+
     // Set up a DMX input
-    DmxInput::return_code retVal = in_0.begin(PIN_DMXIN_0, 0, 512, pio1, false);
+#define NUMCHANNELS 600
+    DmxInput::return_code retVal = in_0.begin(PIN_DMXIN_0, 0, NUMCHANNELS, pio1, false);
     in_0.read_async(DMXBuffer[0], input_updated_c);
 
     while (true) {
